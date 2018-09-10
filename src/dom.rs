@@ -107,4 +107,45 @@ mod dom_tests {
 	fn can_show_debug_output() {
 		println!("{:?}", text("test".into()));
 	}
+
+	#[test]
+	fn can_append_children() {
+		let expected = Node {
+			node_type: NodeType::Text("parent".into()),
+			children: vec![Node {
+				children: vec![],
+				node_type: NodeType::Text("child".into()),
+			}],
+		};
+		let mut actual = text("parent".into());
+		actual.append(text("child".into()));
+		assert_eq!(expected, actual);
+	}
+
+	#[test]
+	fn can_extract_the_id_from_a_node() {
+		let mut attrs = HashMap::new();
+		attrs.insert("id".into(), "test".into());
+		let node = elem("test".into(), attrs, vec![]);
+		if let NodeType::Element(ref data) = node.node_type {
+			assert_eq!(data.id(), Some(&"test".to_string()));
+		} else {
+			unreachable!();
+		}
+	}
+
+	#[test]
+	fn can_get_classes() {
+		let mut attrs = HashMap::new();
+		attrs.insert("class".into(), "a b".into());
+		let node = elem("test".into(), attrs, vec![]);
+		if let NodeType::Element(ref data) = node.node_type {
+			let mut expected = HashSet::new();
+			expected.insert("a");
+			expected.insert("b");
+			assert_eq!(data.classes(), expected);
+		} else {
+			unreachable!();
+		}
+	}
 }
