@@ -47,12 +47,13 @@ impl fmt::Debug for Node {
 		match &self.node_type {
 			NodeType::Element(ref data) => {
 				write!(f, "<{}", data.tag_name);
-				// TODO: Print attributes
+
+				for (key, val) in data.attributes.iter() {
+					write!(f, " {}=\"{}\"", key, val);
+				}
+
 				if self.children.len() == 0 {
-					if data.attributes.is_empty() {
-						write!(f, " ");
-					}
-					write!(f, "/>")
+					write!(f, " />")
 				} else {
 					write!(f, ">");
 					for node in &self.children {
