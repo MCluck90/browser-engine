@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fmt;
 
 pub type AttrMap = HashMap<String, String>;
@@ -38,6 +38,27 @@ pub fn elem(name: String, attrs: AttrMap, children: Vec<Node>) -> Node {
 			tag_name: name,
 			attributes: attrs,
 		}),
+	}
+}
+
+// Node methods
+impl Node {
+	pub fn append(&mut self, child: Node) {
+		self.children.push(child);
+	}
+}
+
+// Element methods
+impl ElementData {
+	pub fn id(&self) -> Option<&String> {
+		self.attributes.get("id")
+	}
+
+	pub fn classes(&self) -> HashSet<&str> {
+		match self.attributes.get("class") {
+			Some(classlist) => classlist.split(' ').collect(),
+			None => HashSet::new(),
+		}
 	}
 }
 
