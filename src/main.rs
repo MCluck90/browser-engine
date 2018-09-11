@@ -1,5 +1,6 @@
 mod dom;
 mod html;
+mod parser;
 
 use dom::*;
 use html::parse;
