@@ -25,9 +25,12 @@ fn main() {
 	<html>
 		<body>
 			<h1>Hello, world!</h1>
+			<div id=\"div-id\">
+				<h2 class=\"a b c\">Inner stuff</h2>
+			</div>
 		</body>
 	</html>";
 	let output = parse(input.into());
 	println!("{}", "Complex DOM:");
-	println!("{: >2?}", output);
+	println!("{: >2?}\n", output);
 }

@@ -65,9 +65,23 @@ impl ElementData {
 // Pretty print DOM nodes
 impl fmt::Debug for Node {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		self.pretty_print_helper(f, 0)
+	}
+}
+
+impl Node {
+	fn pretty_print_helper(&self, f: &mut fmt::Formatter, depth: usize) -> fmt::Result {
+		let c = f.fill();
+		let width = f.width().unwrap_or(0) * depth;
+		let indent = if depth > 0 {
+			format!("{:width$}", c, width = width)
+		} else {
+			"".to_string()
+		};
+
 		match &self.node_type {
 			NodeType::Element(ref data) => {
-				write!(f, "<{}", data.tag_name);
+				write!(f, "{}<{}", indent, data.tag_name);
 
 				for (key, val) in data.attributes.iter() {
 					write!(f, " {}=\"{}\"", key, val);
@@ -78,12 +92,13 @@ impl fmt::Debug for Node {
 				} else {
 					write!(f, ">");
 					for node in &self.children {
-						write!(f, "\n\t{:?}", node);
+						write!(f, "\n");
+						let _ = node.pretty_print_helper(f, depth + 1);
 					}
-					write!(f, "\n</{}>", data.tag_name)
+					write!(f, "\n{}</{}>", indent, data.tag_name)
 				}
 			}
-			NodeType::Text(ref s) => write!(f, "{}", s),
+			NodeType::Text(ref s) => write!(f, "{}{}", indent, s),
 		}
 	}
 }
