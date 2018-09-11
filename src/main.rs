@@ -1,8 +1,8 @@
 mod dom;
-mod parser;
+mod html;
 
 use dom::*;
-use parser::parse;
+use html::parse;
 use std::collections::HashMap;
 
 fn main() {
