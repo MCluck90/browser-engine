@@ -1,3 +1,5 @@
+extern crate num;
+
 mod dom;
 mod html;
 mod parser;

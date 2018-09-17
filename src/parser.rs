@@ -1,3 +1,6 @@
+use num::Num;
+use std::str::FromStr;
+
 pub struct Parser {
 	pos: usize,
 	input: String,
@@ -32,6 +35,15 @@ impl Parser {
 		cur_char
 	}
 
+	// Return the next set of characters which form a number
+	pub fn consume_number<T>(&mut self) -> Result<T, <T as FromStr>::Err>
+	where
+		T: Num + FromStr,
+	{
+		let val = self.consume_while(|c| char::is_numeric(c));
+		val.parse()
+	}
+
 	// Consume characters until `test` returns false
 	pub fn consume_while<F>(&mut self, test: F) -> String
 	where
@@ -47,5 +59,13 @@ impl Parser {
 	// Consume and discard zero or more whitespace characters
 	pub fn consume_whitespace(&mut self) {
 		self.consume_while(char::is_whitespace);
+	}
+
+	// Consume and discard a specific string
+	pub fn consume_string(&mut self, val: &str) {
+		for c in val.chars() {
+			let next = self.consume_char();
+			assert!(c == next);
+		}
 	}
 }
