@@ -1,11 +1,11 @@
 extern crate num;
 
+mod css;
 mod dom;
 mod html;
 mod parser;
 
 use dom::*;
-use html::parse;
 use std::collections::HashMap;
 
 fn main() {
@@ -33,7 +33,14 @@ fn main() {
 			</div>
 		</body>
 	</html>";
-	let output = parse(input.into());
+	let output = html::parse(input.into());
 	println!("{}", "Complex DOM:");
 	println!("{: >2?}\n", output);
+
+	let input = "
+	p {
+		color: rgba(127, 23, 64, 255);
+	}";
+	let output = css::parse(input.into());
+	println!("{:?}", output);
 }

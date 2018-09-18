@@ -1,18 +1,22 @@
 use parser::Parser;
 
+#[derive(Debug)]
 pub struct Stylesheet {
 	pub rules: Vec<Rule>,
 }
 
+#[derive(Debug)]
 pub struct Rule {
 	pub selectors: Vec<Selector>,
 	pub declarations: Vec<Declaration>,
 }
 
+#[derive(Debug)]
 pub enum Selector {
 	Simple(SimpleSelector),
 }
 
+#[derive(Debug)]
 pub struct SimpleSelector {
 	pub tag_name: Option<String>,
 	pub id: Option<String>,
@@ -20,21 +24,25 @@ pub struct SimpleSelector {
 	pub universal: bool,
 }
 
+#[derive(Debug)]
 pub struct Declaration {
 	pub name: String,
 	pub value: Value,
 }
 
+#[derive(Debug)]
 pub enum Value {
 	Keyword(String),
 	Length(f32, Unit),
 	ColorValue(Color),
 }
 
+#[derive(Debug)]
 pub enum Unit {
 	Px,
 }
 
+#[derive(Debug)]
 pub struct Color {
 	r: u8,
 	g: u8,
@@ -51,6 +59,17 @@ impl CssParser {
 		CssParser {
 			inner: Parser::new(input),
 		}
+	}
+
+	// Tells us if it's possible to start parsing a rule
+	fn can_start_rule(&self) -> bool {
+		self.can_start_simple_selector()
+	}
+
+	// Tells us if the next char can be used to start a selector
+	fn can_start_simple_selector(&self) -> bool {
+		let next = self.inner.next_char();
+		next == '#' || next == '.' || next == '*' || is_valid_identifier_char(next)
 	}
 
 	// Parse an identifier
@@ -94,7 +113,7 @@ impl CssParser {
 
 	fn parse_selector(&mut self) -> Option<Selector> {
 		// Take a simple selector
-		if !self.inner.eof() {
+		if !self.inner.eof() && self.can_start_simple_selector() {
 			return Some(Selector::Simple(self.parse_simple_selector()));
 		}
 		None
@@ -151,6 +170,7 @@ impl CssParser {
 		loop {
 			if let Some(selector) = self.parse_selector() {
 				selectors.push(selector);
+				self.inner.consume_whitespace();
 			} else {
 				break;
 			}
@@ -162,17 +182,27 @@ impl CssParser {
 		}
 	}
 
-	fn parse_stylesheet(&mut self) -> Stylesheet {
+	fn parse_stylesheet(&mut self) -> Result<Stylesheet, String> {
 		let mut rules = Vec::new();
 		loop {
 			self.inner.consume_whitespace();
-			if self.inner.eof() {
+			if self.inner.eof() || !self.can_start_rule() {
 				break;
 			}
 			rules.push(self.parse_rule());
 		}
 
-		Stylesheet { rules }
+		if !self.inner.eof() {
+			let pos = self.inner.pos();
+			Err(format!(
+				"Unknown character at {}:{}: {}",
+				pos.line,
+				pos.column,
+				self.inner.next_char()
+			))
+		} else {
+			Ok(Stylesheet { rules })
+		}
 	}
 }
 
@@ -180,6 +210,6 @@ fn is_valid_identifier_char(c: char) -> bool {
 	char::is_alphanumeric(c) || c == '_' || c == '-'
 }
 
-pub fn parse(source: String) -> Stylesheet {
+pub fn parse(source: String) -> Result<Stylesheet, String> {
 	CssParser::new(source).parse_stylesheet()
 }

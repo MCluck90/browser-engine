@@ -1,6 +1,12 @@
 use num::Num;
 use std::str::FromStr;
 
+pub struct LinePos {
+	pub pos: usize,
+	pub line: usize,
+	pub column: usize,
+}
+
 pub struct Parser {
 	pos: usize,
 	input: String,
@@ -9,6 +15,26 @@ pub struct Parser {
 impl Parser {
 	pub fn new(input: String) -> Parser {
 		Parser { pos: 0, input }
+	}
+
+	// Gets the current position in the input
+	pub fn pos(&self) -> LinePos {
+		let line = self
+			.input
+			.chars()
+			.take(self.pos)
+			.fold(0, |acc, c| if c == '\n' { acc + 1 } else { acc });
+		let column = self
+			.input
+			.chars()
+			.rev()
+			.position(|c| c == '\n')
+			.unwrap_or(0);
+		LinePos {
+			pos: self.pos,
+			line,
+			column,
+		}
 	}
 
 	// Read the next character without consuming it
