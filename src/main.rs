@@ -34,7 +34,7 @@ fn main() {
 		</body>
 	</html>";
 	let output = html::parse(input.into());
-	println!("{}", "Complex DOM:");
+	println!("Complex DOM:");
 	println!("{: >2?}\n", output);
 
 	let input = "
@@ -42,5 +42,6 @@ fn main() {
 		color: rgba(127, 23, 64, 255);
 	}";
 	let output = css::parse(input.into());
+	println!("Basic CSS:");
 	println!("{:?}", output);
 }

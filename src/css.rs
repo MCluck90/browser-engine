@@ -166,7 +166,7 @@ impl CssParser {
 
 	fn parse_rule(&mut self) -> Rule {
 		let mut selectors = Vec::new();
-		let declarations = Vec::new();
+		let mut declarations = Vec::new();
 		loop {
 			if let Some(selector) = self.parse_selector() {
 				selectors.push(selector);
@@ -174,6 +174,19 @@ impl CssParser {
 			} else {
 				break;
 			}
+		}
+
+		self.inner.consume_whitespace();
+		assert!(self.inner.consume_char() == '{');
+
+		loop {
+			self.inner.consume_whitespace();
+			if self.inner.next_char() == '}' {
+				self.inner.consume_char();
+				break;
+			}
+
+			declarations.push(self.parse_declaration());
 		}
 
 		Rule {
