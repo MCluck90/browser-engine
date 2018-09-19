@@ -107,6 +107,17 @@ impl Node {
 mod dom_tests {
 	use super::*;
 
+	macro_rules! test_with_output {
+		($test_name:ident, $body:expr) => {
+			#[test]
+			fn $test_name() {
+				println!("\n\n--Begin dom::dom_tests::{}--", stringify!($test_name));
+				$body
+				println!("--End dom::dom_tests::{}--\n", stringify!($test_name));
+			}
+		};
+	}
+
 	#[test]
 	fn can_generate_a_text_node() {
 		let input = "test".to_string();
@@ -118,10 +129,9 @@ mod dom_tests {
 		assert_eq!(expected, actual);
 	}
 
-	#[test]
-	fn can_show_debug_output() {
+	test_with_output!(can_show_debug_output, {
 		println!("{:?}", text("test".into()));
-	}
+	});
 
 	#[test]
 	fn can_append_children() {
