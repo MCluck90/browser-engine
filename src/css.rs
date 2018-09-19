@@ -1,11 +1,11 @@
 use parser::Parser;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Stylesheet {
 	pub rules: Vec<Rule>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Rule {
 	pub selectors: Vec<Selector>,
 	pub declarations: Vec<Declaration>,
@@ -13,7 +13,7 @@ pub struct Rule {
 
 pub type Specificity = (usize, usize, usize);
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Selector {
 	Simple(SimpleSelector),
 }
@@ -29,7 +29,7 @@ impl Selector {
 	}
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct SimpleSelector {
 	pub tag_name: Option<String>,
 	pub id: Option<String>,
@@ -37,25 +37,25 @@ pub struct SimpleSelector {
 	pub universal: bool,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Declaration {
 	pub name: String,
 	pub value: Value,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Value {
 	Keyword(String),
 	Length(f32, Unit),
 	ColorValue(Color),
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Unit {
 	Px,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Color {
 	r: u8,
 	g: u8,
@@ -241,4 +241,38 @@ fn is_valid_identifier_char(c: char) -> bool {
 
 pub fn parse(source: String) -> Result<Stylesheet, String> {
 	CssParser::new(source).parse_stylesheet()
+}
+
+#[cfg(test)]
+mod html_tests {
+	use super::*;
+
+	#[test]
+	fn can_parse_p_selector() {
+		let input = "
+			p {
+				color: rgba(10, 20, 30, 40);
+			}".into();
+		let expected = Stylesheet {
+			rules: vec![Rule {
+				selectors: vec![Selector::Simple(SimpleSelector {
+					tag_name: Some("p".into()),
+					class: Vec::new(),
+					id: None,
+					universal: false,
+				})],
+				declarations: vec![Declaration {
+					name: "color".into(),
+					value: Value::ColorValue(Color {
+						r: 10,
+						g: 20,
+						b: 30,
+						a: 40,
+					}),
+				}],
+			}],
+		};
+		let actual = parse(input);
+		assert_eq!(Ok(expected), actual);
+	}
 }

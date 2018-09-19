@@ -109,3 +109,46 @@ pub fn parse(source: String) -> dom::Node {
 		dom::elem("html".to_string(), HashMap::new(), nodes)
 	}
 }
+
+#[cfg(test)]
+mod html_tests {
+	use super::*;
+	use dom;
+	use std::collections::HashMap;
+
+	#[test]
+	fn can_parse_basic_html() {
+		let input = "<html></html>".into();
+		let expected = dom::elem("html".into(), HashMap::new(), Vec::new());
+		let actual = parse(input);
+		assert_eq!(expected, actual);
+	}
+
+	#[test]
+	fn can_parse_more_complex_dom() {
+		let input = "
+			<html>
+				<body>
+					<h1 id=\"test\">Test</h1>
+				</body>
+			</html>
+			".into();
+		let mut h1_attrs = HashMap::new();
+		h1_attrs.insert("id".into(), "test".into());
+		let expected = dom::elem(
+			"html".into(),
+			HashMap::new(),
+			vec![dom::elem(
+				"body".into(),
+				HashMap::new(),
+				vec![dom::elem(
+					"h1".into(),
+					h1_attrs,
+					vec![dom::text("Test".into())],
+				)],
+			)],
+		);
+		let actual = parse(input);
+		assert_eq!(expected, actual);
+	}
+}
