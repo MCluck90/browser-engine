@@ -43,19 +43,19 @@ pub struct Declaration {
 	pub value: Value,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Value {
 	Keyword(String),
 	Length(f32, Unit),
 	ColorValue(Color),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Unit {
 	Px,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Color {
 	r: u8,
 	g: u8,

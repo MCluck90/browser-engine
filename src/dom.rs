@@ -6,10 +6,10 @@ pub type AttrMap = HashMap<String, String>;
 #[derive(PartialEq)]
 pub struct Node {
 	// Data common to all nodes
-	children: Vec<Node>,
+	pub children: Vec<Node>,
 
 	// Data specific to each node type
-	node_type: NodeType,
+	pub node_type: NodeType,
 }
 
 #[derive(Debug, PartialEq)]
@@ -20,8 +20,8 @@ pub enum NodeType {
 
 #[derive(Debug, PartialEq)]
 pub struct ElementData {
-	tag_name: String,
-	attributes: AttrMap,
+	pub tag_name: String,
+	pub attributes: AttrMap,
 }
 
 pub fn text(data: String) -> Node {
