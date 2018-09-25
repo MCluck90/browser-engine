@@ -7,9 +7,9 @@ type PropertyMap = HashMap<String, Value>;
 
 // A node with associated style data.
 pub struct StyledNode<'a> {
-	node: &'a Node,
-	specified_values: PropertyMap,
-	children: Vec<StyledNode<'a>>,
+	pub node: &'a Node,
+	pub specified_values: PropertyMap,
+	pub children: Vec<StyledNode<'a>>,
 }
 
 fn matches(elem: &ElementData, selector: &Selector) -> bool {
