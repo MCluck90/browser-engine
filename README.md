@@ -20,7 +20,7 @@ This is a toy browser engine being written by following the ["Let's build a brow
   - [ ] Initial and/or computed values
   - [ ] Inheritance
   - [ ] The `style` attribute
-- [ ] Part 5: Boxes
+- [x] Part 5: Boxes
 - [ ] Part 6: Block Layout
   - [ ] Collapsing vertical margins.
   - [ ] [Relative positioning.][relative-positioning]
