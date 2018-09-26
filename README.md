@@ -8,7 +8,7 @@ This is a toy browser engine being written by following the ["Let's build a brow
   - [x] Write code to pretty-print a tree of DOM nodes.
 - [x] Part 2: HTML
   - [x] Build a parser (either "by hand" or with a library or parser generator) that takes a subset of HTML as input and produces a tree of DOM nodes.
-  - [ ] Modify robinson's HTML parser to add some missing features, like comments. Or replace it with a better parser, perhaps built with a library or generator.
+  - [x] Modify robinson's HTML parser to add some missing features, like comments. Or replace it with a better parser, perhaps built with a library or generator.
   - [ ] Create an invalid HTML file that causes your parser (or mine) to fail. Modify the parser to recover from the error and produce a DOM tree for your test file.
 - [x] Part 3: CSS
   - [x] Implement your own simplified CSS parser and specificity calculation.

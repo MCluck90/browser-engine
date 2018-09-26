@@ -111,7 +111,7 @@ pub fn style_tree<'a>(root: &'a Node, stylesheet: &'a Stylesheet) -> StyledNode<
 		node: root,
 		specified_values: match root.node_type {
 			NodeType::Element(ref elem) => specified_values(elem, stylesheet),
-			NodeType::Text(_) => HashMap::new(),
+			NodeType::Text(_) | NodeType::Comment(_) => HashMap::new(),
 		},
 		children: root
 			.children

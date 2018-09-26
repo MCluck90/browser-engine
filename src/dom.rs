@@ -14,8 +14,9 @@ pub struct Node {
 
 #[derive(Debug, PartialEq)]
 pub enum NodeType {
-	Text(String),
+	Comment(String),
 	Element(ElementData),
+	Text(String),
 }
 
 #[derive(Debug, PartialEq)]
@@ -38,6 +39,13 @@ pub fn elem(name: String, attrs: AttrMap, children: Vec<Node>) -> Node {
 			tag_name: name,
 			attributes: attrs,
 		}),
+	}
+}
+
+pub fn comment(contents: String) -> Node {
+	Node {
+		children: Vec::new(),
+		node_type: NodeType::Comment(contents),
 	}
 }
 
@@ -80,6 +88,7 @@ impl Node {
 		};
 
 		match &self.node_type {
+			NodeType::Comment(ref s) => write!(f, "<!-- {}{} -->", indent, s),
 			NodeType::Element(ref data) => {
 				write!(f, "{}<{}", indent, data.tag_name);
 

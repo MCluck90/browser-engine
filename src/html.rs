@@ -23,6 +23,10 @@ impl HtmlParser {
 
 	// Parse a single node
 	fn parse_node(&mut self) -> dom::Node {
+		if self.inner.starts_with("<!--") {
+			return self.parse_comment();
+		}
+
 		match self.inner.next_char() {
 			'<' => self.parse_element(),
 			_ => self.parse_text(),
@@ -52,6 +56,27 @@ impl HtmlParser {
 		assert!(self.inner.consume_char() == '>');
 
 		dom::elem(tag_name, attrs, children)
+	}
+
+	// Parse out a comment
+	fn parse_comment(&mut self) -> dom::Node {
+		// Opening tag
+		self.inner.consume_string("<!--");
+
+		// Contents
+		let mut contents = String::new();
+		loop {
+			if self.inner.starts_with("-->") {
+				break;
+			}
+
+			contents.push(self.inner.consume_char());
+		}
+
+		// Closing tag
+		self.inner.consume_string("-->");
+
+		dom::comment(contents)
 	}
 
 	// Parse a single name="value" pair
@@ -148,6 +173,14 @@ mod html_tests {
 				)],
 			)],
 		);
+		let actual = parse(input);
+		assert_eq!(expected, actual);
+	}
+
+	#[test]
+	fn can_parse_basic_comment() {
+		let input = "<!-- some comment -->".into();
+		let expected = dom::comment(" some comment ".into());
 		let actual = parse(input);
 		assert_eq!(expected, actual);
 	}
